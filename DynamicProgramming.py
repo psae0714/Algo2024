@@ -20,35 +20,43 @@ def fiboTabulation(n):
     return table[n]
 
 def rodCutMemoization(price, n, memo):
-    # 메모이제이션: 이미 계산된 값이 있다면 반환
     if memo[n] >= 0:
         return memo[n]
     
-    # 기저 사례: 길이가 0이면 가격은 0
     if n == 0:
         return 0
     
-    max_price = float('-inf')
+    max_price = 0  # 0으로 초기화
     
-    # 모든 자르는 위치에 대해 최대 가격을 구함
     for i in range(1, n + 1):
-        max_price = max(max_price, price[i] + rodCutMemoization(price, n - i, memo))
+        current_price = price[i] + rodCutMemoization(price, n - i, memo)
+        if current_price > max_price:  # 최대값 갱신
+            max_price = current_price
     
-    # 결과를 메모이제이션
     memo[n] = max_price
     return max_price
 
 def rodCutTabulation(price, n):
-    # 최대 가격을 저장할 배열 초기화
     dp = [0] * (n + 1)
-    
-    # 각 길이에 대한 최대 가격 계산
+    dp[0]=0
     for i in range(1, n + 1):
-        max_price = float('-inf')
-        # 모든 자르는 위치에 대해 최대 가격을 구함
+        max_price = float('-inf') # 0으로 초기화
         for j in range(1, i + 1):
-            max_price = max(max_price, price[j] + dp[i - j])
+            current_price = price[j] + dp[i - j]
+            if current_price > max_price:  # 최대값 갱신
+                max_price = current_price
         dp[i] = max_price
     
-    # 최종 최대 가격 반환
     return dp[n]
+
+price = [0, 1, 2, 8, 2, 3]
+arr = [-1] * (len(price) + 1)  # 메모이제이션용 배열 초기화
+
+print(rodCutMemoization(price, 3, arr))
+print("\n")
+print(rodCutTabulation(price, 3))
+
+arr=[0]*11
+print(fiboMemoization(5,arr))
+print("\n")
+print(fiboTabulation(6))
